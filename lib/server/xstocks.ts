@@ -67,6 +67,29 @@ export async function getPrice(symbol: string): Promise<number | null> {
   }
 }
 
+/**
+ * Token-2022 Scaled UI çarpanı (ör. temettü sonrası 1.0026). Ham (raw)
+ * zincir miktarını gerçek adede çevirirken gerekir. RPC'nin uiAmount'ı bunu
+ * zaten içerir; bu fonksiyon yalnızca raw veri döndüren kaynaklar
+ * (ör. Jupiter Lend) için kullanılır. Hata durumunda 1 varsayılır.
+ */
+export async function getScaledUiMultiplier(symbol: string): Promise<number> {
+  try {
+    const res = await fetch(
+      `${XSTOCKS_API}/assets/${encodeURIComponent(symbol)}/multiplier?network=Solana`,
+      { next: { revalidate: 600 }, headers: { accept: "application/json" } }
+    );
+    if (!res.ok) return 1;
+    const data = (await res.json()) as { currentMultiplier?: number };
+    return typeof data.currentMultiplier === "number" &&
+      data.currentMultiplier > 0
+      ? data.currentMultiplier
+      : 1;
+  } catch {
+    return 1;
+  }
+}
+
 export function isValidSolanaAddress(addr: string): boolean {
   return /^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(addr);
 }

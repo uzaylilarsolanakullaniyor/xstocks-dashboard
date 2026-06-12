@@ -35,13 +35,40 @@ export interface PortfolioPosition {
   value: number;
 }
 
+// Jupiter Lend (Fluid) borrow kasasındaki xStock teminat pozisyonu
+export interface LendPosition {
+  vaultId: number;
+  nftId: number;
+  collateralSymbol: string;
+  collateralName: string;
+  collateralLogo: string | null;
+  /** Gerçek adet (raw / 10^decimals × Scaled UI çarpanı) */
+  collateralAmount: number;
+  collateralPrice: number | null;
+  collateralValue: number;
+  debtSymbol: string;
+  debtAmount: number;
+  debtValue: number;
+  netValue: number;
+  /** null => borç yok (sağlık faktörü anlamsız) */
+  healthFactor: number | null;
+}
+
 export interface PortfolioResult {
   wallet: string;
   totalValue: number;
+  /** Cüzdanda duran token'ların toplamı */
+  walletValue: number;
   positions: PortfolioPosition[];
+  /** Jupiter Lend'e teminat olarak yatırılmış xStock pozisyonları */
+  lendPositions: LendPosition[];
+  /** Lend teminat − borç toplamı */
+  lendNetValue: number;
   /** Fiyatı alınamayan semboller (rate limit vb.) */
   missingPrices: string[];
   rpcFallback: boolean;
+  /** Jupiter Lend API'sine ulaşılamadıysa uyarı metni */
+  lendError: string | null;
   error?: string;
 }
 

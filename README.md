@@ -16,7 +16,7 @@ işlem/transaction yapmaz, cüzdan bağlamaz, imza istemez.
 |---|---|
 | **Canlı Puan Paneli** | Birden çok cüzdan (localStorage'da saklanır) için toplam puan, bugünkü puan, boost çarpanı, holding/lend/LP/referans kırılımı; cüzdan başına satır + toplam satırı |
 | **Strateji Hesaplayıcı** | Sermayeyi Tut (1x) / Lend (5x) / LP (7x) arasında bölüştür, +%20 boost anahtarı; göreceli puan gücü ve senaryo karşılaştırma grafiği. Tamamen tarayıcıda çalışır |
-| **Canlı Pozisyon Değeri** | Cüzdanlardaki xStock (Token-2022) bakiyeleri × güncel fiyatlar; toplam $ değer, token dökümü, dağılım grafiği |
+| **Canlı Pozisyon Değeri** | Cüzdandaki xStock (Token-2022) bakiyeleri **+ Jupiter Lend'e yatırılmış teminatlar** × güncel fiyatlar; toplam $ değer, token dökümü, lend net değeri (teminat − borç), sağlık faktörü, dağılım grafiği |
 | **Leaderboard (opsiyonel)** | `LEADERBOARD_URL` doluysa görünür; boşsa gizlenir (karşılaştırma için çoklu cüzdan tablosu yeterlidir) |
 
 ## Kurulum: GitHub → Vercel
@@ -87,6 +87,17 @@ Alan isimleri varsayılmadı; resmi `defi.xstocks.fi` istemcisinin yaptığı
 - **Hız limiti:** public API 10 istek/dk → varlık listesi 10 dk, fiyatlar
   60 sn, puanlar 120 sn sunucu önbelleğindedir; fiyat yalnızca cüzdanda
   bulunan semboller için istenir
+- **Jupiter Lend:** resmi `lite-api.jup.ag/lend/v1`'de borrow pozisyon ucu
+  henüz veri vermiyor; jup.ag arayüzünün kullandığı gerçek backend
+  `api.solana.fluid.io/v1/main` üzerinden okunur:
+  - `GET /borrowing/vaults` → kasa listesi (`supplyToken`, `borrowToken`,
+    decimals, fiyat) — 10 dk önbellek
+  - `GET /borrowing/positions?owner={wallet}` → `{vaultId, supply, borrow,
+    healthFactor}`; `supply`/`borrow` **ham (raw)** birimdedir →
+    `10^decimals`'e bölünür ve xStock teminatlarında Scaled UI çarpanı
+    ayrıca uygulanır (cüzdan bakiyesinin aksine — orada RPC zaten uygular)
+  - Borç yoksa API `healthFactor` alanına astronomik değer koyar → "∞"
+    gösterilir. Kamino ve LP pozisyonları henüz dahil değildir
 
 ## Güvenlik
 
