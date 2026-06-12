@@ -10,7 +10,14 @@ type RowState =
   | { status: "error"; message: string }
   | { status: "ok"; data: PointsResult };
 
-export default function PointsPanel({ wallets }: { wallets: string[] }) {
+export default function PointsPanel({
+  wallets,
+  onTotalPoints,
+}: {
+  wallets: string[];
+  /** Toplam puan değiştiğinde bildirir (airdrop hesaplayıcı otomatik dolsun diye) */
+  onTotalPoints?: (total: number) => void;
+}) {
   const [rows, setRows] = useState<Record<string, RowState>>({});
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
   const [refreshing, setRefreshing] = useState(false);
@@ -73,6 +80,10 @@ export default function PointsPanel({ wallets }: { wallets: string[] }) {
       0
     ),
   };
+
+  useEffect(() => {
+    onTotalPoints?.(totals.total);
+  }, [totals.total, onTotalPoints]);
 
   return (
     <GlassCard

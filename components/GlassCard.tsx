@@ -14,7 +14,7 @@ export default function GlassCard({
   className?: string;
 }) {
   return (
-    <section className={`glass glass-shine fade-up p-5 sm:p-6 ${className}`}>
+    <section className={`glass glass-shine fade-up h-full p-5 sm:p-6 ${className}`}>
       {(title || action) && (
         <header className="mb-4 flex flex-wrap items-start justify-between gap-3">
           <div>
