@@ -17,41 +17,49 @@ body {
   overflow-x: hidden;
 }
 
-/* ---- Akiskan gradient arka plan ---- */
+/* ---- Canlı, renkli liquid arka plan ---- */
 .aurora {
   position: fixed;
   inset: 0;
   z-index: -1;
   overflow: hidden;
   background:
-    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(56, 89, 199, 0.28), transparent),
-    linear-gradient(180deg, #070b14 0%, #0a1020 50%, #070b14 100%);
+    radial-gradient(45% 35% at 12% 8%, rgba(139, 92, 246, 0.45), transparent 70%),
+    radial-gradient(40% 32% at 88% 10%, rgba(236, 72, 153, 0.38), transparent 70%),
+    radial-gradient(50% 40% at 86% 88%, rgba(45, 212, 191, 0.32), transparent 70%),
+    radial-gradient(42% 34% at 8% 92%, rgba(251, 146, 60, 0.26), transparent 70%),
+    radial-gradient(70% 55% at 50% 45%, rgba(59, 130, 246, 0.20), transparent 75%),
+    linear-gradient(180deg, #0c1022 0%, #111433 50%, #0b0f20 100%);
 }
 
 .aurora::before,
 .aurora::after {
   content: "";
   position: absolute;
-  width: 55vmax;
-  height: 55vmax;
+  width: 60vmax;
+  height: 60vmax;
   border-radius: 9999px;
-  filter: blur(90px);
-  opacity: 0.55;
+  filter: blur(100px);
+  opacity: 0.5;
   will-change: transform;
 }
 
 .aurora::before {
-  background: radial-gradient(circle at center, rgba(99, 102, 241, 0.35), transparent 60%);
-  top: -20vmax;
-  left: -10vmax;
-  animation: drift1 26s ease-in-out infinite alternate;
+  background:
+    radial-gradient(circle at 30% 30%, rgba(217, 70, 239, 0.45), transparent 55%),
+    radial-gradient(circle at 70% 70%, rgba(99, 102, 241, 0.4), transparent 60%);
+  top: -22vmax;
+  left: -12vmax;
+  animation: drift1 24s ease-in-out infinite alternate;
 }
 
 .aurora::after {
-  background: radial-gradient(circle at center, rgba(16, 185, 129, 0.22), transparent 60%);
-  bottom: -25vmax;
-  right: -12vmax;
-  animation: drift2 32s ease-in-out infinite alternate;
+  background:
+    radial-gradient(circle at 60% 40%, rgba(34, 211, 238, 0.4), transparent 55%),
+    radial-gradient(circle at 30% 80%, rgba(251, 191, 36, 0.28), transparent 60%);
+  bottom: -26vmax;
+  right: -14vmax;
+  animation: drift2 30s ease-in-out infinite alternate;
 }
 
 @keyframes drift1 {
@@ -64,37 +72,39 @@ body {
   to   { transform: translate(-10vmax, -6vmax) scale(0.95); }
 }
 
-/* ---- Liquid glass kartlar ---- */
+/* ---- Liquid glass kartlar (yoğun buzlu cam) ---- */
 .glass {
   position: relative;
-  border-radius: 1.5rem;
+  border-radius: 2rem;
   background: linear-gradient(
     135deg,
-    rgba(255, 255, 255, 0.08) 0%,
-    rgba(255, 255, 255, 0.03) 50%,
-    rgba(255, 255, 255, 0.06) 100%
+    rgba(255, 255, 255, 0.13) 0%,
+    rgba(255, 255, 255, 0.05) 45%,
+    rgba(255, 255, 255, 0.1) 100%
   );
-  backdrop-filter: blur(18px) saturate(140%);
-  -webkit-backdrop-filter: blur(18px) saturate(140%);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(28px) saturate(175%);
+  -webkit-backdrop-filter: blur(28px) saturate(175%);
+  border: 1px solid rgba(255, 255, 255, 0.18);
   box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.35),
-    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+    0 10px 40px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.06);
   transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
 }
 
 .glass:hover {
-  border-color: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.28);
   box-shadow:
-    0 12px 40px rgba(0, 0, 0, 0.45),
-    inset 0 1px 0 rgba(255, 255, 255, 0.18),
-    0 0 24px rgba(99, 102, 241, 0.12);
+    0 14px 48px rgba(0, 0, 0, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3),
+    0 0 32px rgba(139, 92, 246, 0.18);
 }
 
 .glass-inner {
-  border-radius: 1rem;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 1.25rem;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(6px);
 }
 
 /* Ust kenardaki parlama cizgisi */
@@ -110,7 +120,7 @@ body {
 }
 
 .btn-glass {
-  border-radius: 0.9rem;
+  border-radius: 1.1rem;
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.14);
   backdrop-filter: blur(8px);
@@ -127,7 +137,7 @@ body {
 }
 
 .btn-primary {
-  border-radius: 0.9rem;
+  border-radius: 1.1rem;
   background: linear-gradient(135deg, rgba(99, 102, 241, 0.85), rgba(79, 70, 229, 0.85));
   border: 1px solid rgba(129, 140, 248, 0.5);
   box-shadow: 0 4px 20px rgba(99, 102, 241, 0.35);
@@ -144,7 +154,7 @@ body {
 }
 
 .input-glass {
-  border-radius: 0.9rem;
+  border-radius: 1.1rem;
   background: rgba(0, 0, 0, 0.25);
   border: 1px solid rgba(255, 255, 255, 0.12);
   transition: border-color 0.2s ease, box-shadow 0.2s ease;

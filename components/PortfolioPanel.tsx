@@ -1,13 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import {
-  Cell,
-  Pie,
-  PieChart,
-  ResponsiveContainer,
-  Tooltip,
-} from "recharts";
+import { Cell, Pie, PieChart, Tooltip } from "recharts";
 import GlassCard from "./GlassCard";
 import {
   formatNumber,
@@ -129,6 +123,13 @@ export default function PortfolioPanel({ wallets }: { wallets: string[] }) {
   const walletValue = okStates.reduce((s, x) => s + x.data.walletValue, 0);
   const lendNetValue = okStates.reduce((s, x) => s + x.data.lendNetValue, 0);
   const totalValue = walletValue + lendNetValue;
+  // Borç düşülmeden toplam teminat — borçla tekrar yatırılanlar da puana
+  // sayıldığı için puan açısından anlamlı olan brüt maruziyettir
+  const lendCollateralValue = lendRows.reduce(
+    (s, p) => s + p.collateralValue,
+    0
+  );
+  const grossExposure = walletValue + lendCollateralValue;
 
   const missingPrices = [
     ...new Set(okStates.flatMap((s) => s.data.missingPrices)),
@@ -188,8 +189,8 @@ export default function PortfolioPanel({ wallets }: { wallets: string[] }) {
         </p>
       ) : (
         <>
-          <div className="grid gap-5 lg:grid-cols-[1fr_260px]">
-            <div>
+          <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_270px]">
+            <div className="min-w-0">
               {/* Özet */}
               <div className="mb-4 flex flex-wrap gap-3">
                 <div className="glass-inner px-5 py-3">
@@ -214,6 +215,17 @@ export default function PortfolioPanel({ wallets }: { wallets: string[] }) {
                   </p>
                   <p className="mt-1 text-xl font-semibold text-white">
                     {formatUsd(lendNetValue)}
+                  </p>
+                </div>
+                <div className="glass-inner px-5 py-3">
+                  <p className="text-xs uppercase tracking-wider text-slate-400">
+                    Maruziyet (Borç Dahil)
+                  </p>
+                  <p className="mt-1 text-xl font-semibold text-amber-200">
+                    {formatUsd(grossExposure)}
+                  </p>
+                  <p className="text-[10px] text-slate-500">
+                    puana sayılan toplam teminat
                   </p>
                 </div>
               </div>
@@ -400,40 +412,52 @@ export default function PortfolioPanel({ wallets }: { wallets: string[] }) {
                 )}
             </div>
 
-            {/* Dağılım grafiği */}
+            {/* Dağılım grafiği — sabit boyut (taşma/ölçüm hatasına karşı) */}
             {pieData.length > 0 && (
-              <div className="flex flex-col items-center justify-center">
-                <div className="h-56 w-full">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <PieChart>
-                      <Pie
-                        data={pieData}
-                        dataKey="value"
-                        nameKey="name"
-                        innerRadius="55%"
-                        outerRadius="85%"
-                        paddingAngle={3}
-                        stroke="rgba(255,255,255,0.15)"
-                      >
-                        {pieData.map((entry, i) => (
-                          <Cell
-                            key={entry.name}
-                            fill={PIE_COLORS[i % PIE_COLORS.length]}
-                          />
-                        ))}
-                      </Pie>
-                      <Tooltip
-                        contentStyle={{
-                          background: "rgba(10,16,32,0.9)",
-                          border: "1px solid rgba(255,255,255,0.15)",
-                          borderRadius: 12,
-                          color: "#e6edf7",
-                        }}
-                        formatter={(value) => formatUsd(Number(value))}
+              <div className="glass-inner flex flex-col items-center justify-center gap-2 overflow-hidden p-4">
+                <PieChart width={236} height={210}>
+                  <Pie
+                    data={pieData}
+                    dataKey="value"
+                    nameKey="name"
+                    innerRadius={58}
+                    outerRadius={92}
+                    paddingAngle={3}
+                    stroke="rgba(255,255,255,0.15)"
+                  >
+                    {pieData.map((entry, i) => (
+                      <Cell
+                        key={entry.name}
+                        fill={PIE_COLORS[i % PIE_COLORS.length]}
                       />
-                    </PieChart>
-                  </ResponsiveContainer>
-                </div>
+                    ))}
+                  </Pie>
+                  <Tooltip
+                    contentStyle={{
+                      background: "rgba(10,16,32,0.9)",
+                      border: "1px solid rgba(255,255,255,0.15)",
+                      borderRadius: 12,
+                      color: "#e6edf7",
+                    }}
+                    formatter={(value) => formatUsd(Number(value))}
+                  />
+                </PieChart>
+                <ul className="flex flex-wrap justify-center gap-x-3 gap-y-1">
+                  {pieData.map((entry, i) => (
+                    <li
+                      key={entry.name}
+                      className="flex items-center gap-1.5 text-xs text-slate-300"
+                    >
+                      <span
+                        className="inline-block h-2.5 w-2.5 rounded-full"
+                        style={{
+                          background: PIE_COLORS[i % PIE_COLORS.length],
+                        }}
+                      />
+                      {entry.name}
+                    </li>
+                  ))}
+                </ul>
                 <p className="text-center text-xs text-slate-500">
                   Toplam maruziyet (cüzdan + lend teminatı)
                 </p>

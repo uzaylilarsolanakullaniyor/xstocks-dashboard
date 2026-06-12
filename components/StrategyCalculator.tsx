@@ -59,7 +59,7 @@ export default function StrategyCalculator() {
     >
       <div className="grid gap-6 lg:grid-cols-2">
         {/* Girdiler */}
-        <div className="space-y-5">
+        <div className="min-w-0 space-y-5">
           <label className="block">
             <span className="text-sm text-slate-300">Toplam Sermaye ($)</span>
             <input
@@ -116,7 +116,7 @@ export default function StrategyCalculator() {
         </div>
 
         {/* Çıktılar */}
-        <div className="space-y-4">
+        <div className="min-w-0 space-y-4">
           <div className="glass-inner px-4 py-3">
             <p className="text-xs uppercase tracking-wider text-slate-400">
               Göreceli Puan Gücü (birim/zaman)
